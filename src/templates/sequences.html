@@ -1,0 +1,91 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} Sequence Overview {% endblock %}
+
+{% block content %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js" integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js" integrity="sha512-qzgd5cYSZcosqpzpn7zF2ZId8f/8CHmFKZ8j7mU4OUXTNRd5g+ZHBPsgKEwoqxCtdQvExE5LprwwPAgoicguNg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="stylesheet" href="{% static 'css/tablestyle.css' %}" type="text/css">
+
+<div class="container-fluid d-flex flex-column flex-row">
+<div class="row" style="height: 0.5em"></div>
+<div class="row flex-grow-1">
+    <div class="col-2 flex-fill bg-primary">
+        <div class="row pt-2 overflow-auto sticky-top " style="height: calc(100vh - 3.5em); direction:rtl;" id="searchdiv">
+            <form action="{% url 'sequences' %}" method="post" style="direction:ltr;">
+                {% csrf_token %}
+                {% bootstrap_form search_form server_side_validation=False label_class='text-white' form_class='overflow-auto'%}
+                {% bootstrap_button "Search" button_type="submit" button_class="btn-secondary" name='searchsubmit'%}
+                <button type="button" class="btn btn-info" onclick="clearInput(this.closest('form'));">Clear</button>
+                <hr class="hr"/>
+                {% bootstrap_button "Get .fasta (Nt)" formtarget="_blank" button_type="submit" button_class="btn-secondary" name='getfastant'%}
+                {% bootstrap_button "Get .fasta (AA)" formtarget="_blank" button_type="submit" button_class="btn-secondary" name='getfastaaa'%}
+                <div class="row" style="height: 0.5em"></div>
+            </form>
+        </div>
+    </div>
+    <div class="col-10 flex-fill ">
+        <div class="row p-2 pt-0 pe-0">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th title="Click to sort&#010;SHIFT-click to sort multiple columns&#010;CTRL-click to reset" class="table-primary" scope="col">ID</th>
+                    <th title="Click to sort&#010;SHIFT-click to sort multiple columns&#010;CTRL-click to reset" class="table-primary" scope="col">V Germline</th>
+                    <th title="Click to sort&#010;SHIFT-click to sort multiple columns&#010;CTRL-click to reset" class="table-primary" scope="col">D Germline</th>
+                    <th title="Click to sort&#010;SHIFT-click to sort multiple columns&#010;CTRL-click to reset" class="table-primary" scope="col">J Germline</th>
+                    <th title="Click to sort&#010;SHIFT-click to sort multiple columns&#010;CTRL-click to reset" class="table-primary" scope="col">Comment</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sequence in sequences %}
+                <tr>
+                    <td>
+                        <a target="_blank" href="{% url 'sequence/id' id=sequence.id %}">{{ sequence.Sequence_ID }}</a>
+                    </td>
+                    <td>
+                        <a target="_blank" href="{% url 'germline/gene_and_allele' gene_and_allele=sequence.V_Germline %}">{{ sequence.V_Germline }}</a>
+                    </td>
+                    <td>
+                        {% if sequence.D_Germline != None %}
+                            <a target="_blank" href="{% url 'germline/gene_and_allele' gene_and_allele=sequence.D_Germline %}">{{ sequence.D_Germline }}</a>
+                        {% else %}
+                            ---------
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a target="_blank" href="{% url 'germline/gene_and_allele' gene_and_allele=sequence.J_Germline %}">{{ sequence.J_Germline }}</a>
+                    </td>
+                    <td style="width: 30%">
+                        {{ sequence.Comment|linebreaksbr }}
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<script type="text/javascript">
+    window.onscroll = function() {scrollFunction()};
+    const searchdiv = document.getElementById('searchdiv');
+
+    function scrollFunction() {
+        var yval = searchdiv.getBoundingClientRect().top;
+        searchdiv.style.height = `calc(100vh - ${yval}px)`;
+        searchdiv.style.backgroundColor = "#";
+        console.log(searchdiv.style.height);
+    }
+</script>
+<script type="text/javascript">
+$(function() {
+  $(".table").tablesorter({
+      showProcessing: true,
+      headerTemplate: '{content} {icon}',
+      theme : "pinkstrawberry",
+  });
+});
+</script>
+{% endblock %}

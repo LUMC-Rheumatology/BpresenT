@@ -1,0 +1,32 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} mass-spec add info {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="mt-5 mb-5">
+        <div class="row p-1">
+            <div class="col">
+            <div class="float-start">
+                <h3>Mass-spec peptide form</h3>
+            </div>
+            <div class="float-end">
+                <h5><a href="{% url 'peptides/netmhcpan/allelelist' %}">MHC Allele list</a></h5>
+            </div>
+            </div>
+            <form action="{% url 'peptides/msform/id' id=object.id %}" method="post">
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal"%}
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-info" onclick="clearInput(this.closest('form'));">Clear</button>
+            </form>
+            <form>
+                {% bootstrap_form peptide_form layout="horizontal"%}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

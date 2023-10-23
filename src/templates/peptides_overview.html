@@ -1,0 +1,78 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} Peptide List {% endblock %}
+
+{% block content %}
+<div class="container-fluid d-flex flex-column flex-row">
+<div class="row p-1 pt-2 align-items-end">
+            <div class="col">
+                <div class="float-start">
+                {{ queryset|length }} peptides found
+                </div>
+            </div>
+        </div>
+<div class="row flex-grow-1">
+    <div class="col-2 flex-fill bg-primary">
+        <div class="row py-1 bg-white"></div>
+        <div class="row pt-2 sticky-top">
+            <form action="{% url 'peptides/overview' %}" method="post">
+                {% csrf_token %}
+                {% bootstrap_form peptidesearch_form server_side_validation=False label_class='text-white' %}
+                {% bootstrap_button "Search" button_type="submit" button_class="btn-secondary" %}
+                <button type="button" class="btn btn-info" onclick="clearInput(this.closest('form'));">Clear</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-10 flex-fill ">
+        <div class="row p-2">
+            <table class="table table-striped" style="vertical-align: middle">
+                <thead>
+                <tr>
+                    <th class="table-primary" scope="col">ID</th>
+                    <th class="table-primary" scope="col">Peptide</th>
+                    <th class="table-primary" scope="col">%rank</th>
+                    <th class="table-primary" scope="col">allele</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for sequence, object in queryset %}
+                <tr>
+                    <td>
+                        <a href="{% url 'sequence/id' id=sequence.id %}">{{ sequence.Sequence_ID }}</a>
+                    </td>
+                    <td>
+                        {{ object.peptide }}
+                    </td>
+                    <td>
+                        {{ object.percentile_rank }}
+                    </td>
+                    <td>
+                        {{ object.allele }}
+                    </td>
+                </tr>
+                {% for pair in object.pairing.all %}
+                    <tr>
+                        <td class="table-info">
+                            ↑ Mass-Spectrometry
+                        </td>
+                        <td>
+                            {{ pair.found.peptide }}
+                        </td>
+                        <td>
+                            {{ pair.found.confidence }}
+                        </td>
+                        <td>
+                            {{ pair.found.allele }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

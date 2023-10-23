@@ -1,0 +1,68 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} {{ sequenceobj.Sequence_ID }} - Visualizer {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="mt-5 mb-5">
+        <div class="row p-1 pb-0">
+            <div class="float-start">
+                <h3>Visualizer</h3>
+            </div>
+        </div>
+        <div class="row p-1 pt-0">
+            <div class="card border-primary mb-2 px-0">
+                <div class="card-header">
+                    <div class="mb-1">{{ sequenceobj.Sequence_ID }}</div>
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#AA">Amino Acids</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Nt">Nucleotides</a>
+                            </li>
+                        </ul>
+                    </div>
+                <div class="card-body font-monospace">
+                    <div class="card-body tab-content">
+                        <div class="tab-pane active" id="AA">
+                            <pre class="card-text">{{ formatted_sequence_aa|safe }}</pre>
+                        </div>
+                        <div class="tab-pane" id="Nt">
+                            <pre class="card-text">{{ formatted_sequence_nt|safe }}</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="hr" />
+        <form action="" method="post">
+        <div class="row p-1 pb-0">
+            <div class="col">
+            <div class="float-start">
+                <h4>Settings</h4>
+            </div>
+            </div>
+            <div class="col">
+            <div class="float-end">
+                <button type="button" class="btn btn-info" onclick="clearInput(this.closest('form'));">Clear</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </div>
+        </div>
+        <div style="height:100vh;">
+        <div class="row p-1 pt-0" style="height:100vh;">
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal" horizontal_field_class='col-sm-10 h-100'%}
+        </div>
+        </div>
+        </form>
+
+    </div>
+</div>
+    {# enable popper for all tooltips #}
+    <script type="text/javascript" src="{% static 'js/popper_enable.js' %}"></script>
+{% endblock %}

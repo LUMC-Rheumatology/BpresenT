@@ -1,0 +1,75 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title%}{{ request.resolver_match.url_name }}{% endblock %} - BpresenT</title>
+    <link rel="stylesheet" href="{% static 'css/yeti.min.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/scrollbar.css' %}" type="text/css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" src="{% static 'js/form_magic.js' %}"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+<div class="container-fluid vh-100 d-flex flex-column flex-row">
+<div class="row px-2 bg-primary">
+<nav class="navbar navbar-expand-sm navbar-fixed-top navbar-dark bg-primary flex-shrink-0"  style="height: 3em">
+    <a class="navbar-brand" href="#">
+        <img src="{% static 'Codename.png' %}" alt="" width="22" height="22" class="d-inline-block align-text-top">
+        BpresenT
+    </a>
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'projects' %}active{% endif %}" href="{% url 'projects' %}">Projects
+            <span class="visually-hidden">(current)</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link {% if request.resolver_match.url_name == 'sequences' %}active{% endif %}" href="{% url 'sequences' %}">Sequences</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link  {% if request.resolver_match.url_name == 'visualizer' %}active{% endif %}" href="{% url 'visualizer/id' id=0 %}">Visualizer</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  {% if request.resolver_match.url_name == 'peptides' %}active{% endif %}"
+             data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Peptides</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'peptides/netmhcpan' %}">NetMHCpan4.1</a>
+            <a class="dropdown-item" href="{% url 'peptides/msoverview' %}">Mass-spec data</a>
+            <a class="dropdown-item" href="{% url 'peptides/overview' %}">Peptide Overview</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle  {% if request.resolver_match.url_name|slice:":8" == 'settings' %}active{% endif %}"
+             data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Settings</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="{% url 'settings/regular' %}">Regular Settings</a> {% comment %} stuff like IMGT Gene-DB goes here {% endcomment %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">About</a>
+          </div>
+        </li>
+      </ul>
+      <a target="_blank" class="btn btn-secondary my-2 my-sm-0" href="admin/" role="button">Database</a>
+</nav>
+</div>
+<div class="row flex-grow-1">
+    <main class="col flex-fill bg-light bg-gradient m-0 p-0 g-0">
+    {# django messages/alerts #}
+    {% for message in messages %}
+        <div id="alert" class="alert {{ message.tags }} border-0" role="alert">
+            {{ message | safe }}
+        </div>
+        <script src="{% static 'js/messagefade.js' %}"></script>
+    {% endfor %}
+    <!-- DYNAMIC CONTENT STARTS HERE -->
+        {% block content %}
+            No content found!
+        {% endblock %}
+    </main>
+</div>
+</div>
+</body>
+</html>

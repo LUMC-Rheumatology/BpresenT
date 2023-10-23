@@ -1,0 +1,63 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} {{ germline.Gene_and_allele }} {% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid d-flex flex-column flex-row">
+
+        {% comment %}Show germline details{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-2 g-2">
+            <div class="col-5">
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Gene-DB data</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                            {% for field, value in germline_data.items %}
+                                <tr>
+                                    <th scope="row">{{ field }}</th>
+                                    <td>{{ value }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-7 text-break">
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Fasta</div>
+                    <div class="card-body font-monospace">
+                        <div class="text-info">{{ germline_header }}<br></div>
+                        {{ germline_sequence }}
+                    </div>
+                </div>
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Associated Sequences</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th class="table-active" scope="col">Sequence ID</th>
+                                <th class="table-active" scope="col">Project</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sequence in associated_sequences %}
+                                <tr>
+                                    <td><a href="#">{{ sequence.Sequence_ID }}</a></td>
+                                    <td>{{ sequence.Run.Project }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

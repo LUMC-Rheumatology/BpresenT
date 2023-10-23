@@ -1,0 +1,138 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} {{ project.name }} {% endblock %}
+
+{% block content %}
+
+<div class="container-fluid d-flex flex-column flex-row">
+
+    {% comment %} Modal content {% endcomment %}
+    <div class="modal {% if not modal_show %}fade{% endif %}"
+         id="projectModal" data-bs-backdrop="static" tabindex="-1"
+         aria-labelledby="projectModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="projectModalLabel">Upload new V-Quest Run</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form enctype="multipart/form-data" method="post">
+              {% csrf_token %}
+              <div class="modal-body">
+              {% bootstrap_form vquest_form %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="VForm" class="btn btn-primary">Submit</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% if modal_show %}
+        <script>
+        var myModal = new bootstrap.Modal(document.getElementById('projectModal'), {})
+        myModal.toggle()
+        </script>
+    {% endif %}
+
+    {% comment %}Show project details{% endcomment %}
+        <div class="row p-1 pt-2 align-items-end">
+            <div class="col">
+                <div class="float-start">
+                {{ project.name }}
+                </div>
+            </div>
+            <div class="col">
+                <div class="float-end">
+                {% comment %}Trigger Modal{% endcomment %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectModal">
+                    Add VQuest Output
+                </button>
+                </div>
+            </div>
+        </div>
+        <div class="row p-1">
+            <form action="{% url 'sequences' %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" id="Project" name="Project" value="{{ project.id }}">
+                      <a href="#" onclick="this.closest('form').submit();return false;">Show associated sequences</a>
+                  </form>
+        </div>
+    <div class="row p-1 pt-2">
+    <div class="col" style="width: 95vh">
+        <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="table-primary" scope="col">Run name</th>
+                    <th class="table-primary" scope="col">Comment</th>
+                    <th class="table-primary" scope="col">Summary</th>
+                    <th class="table-primary" scope="col">IMGT-gapped-nt-sequences</th>
+                    <th class="table-primary" scope="col">Nt-sequences</th>
+                    <th class="table-primary" scope="col">IMGT-gapped-AA-sequences</th>
+                    <th class="table-primary" scope="col">AA-sequences</th>
+                    <th class="table-primary" scope="col">Junction</th>
+                    <th class="table-primary" scope="col">V-REGION-mutation-and-AA-change-table</th>
+                    <th class="table-primary" scope="col">V-REGION-nt-mutation-statistics</th>
+                    <th class="table-primary" scope="col">V-REGION-AA-change-statistics</th>
+                    <th class="table-primary" scope="col">V-REGION-mutation-hotspots</th>
+                    <th class="table-primary" scope="col">Parameters</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for vquestrun in vquestruns %}
+                    <form action="#" method="post">
+                    {% csrf_token %}
+                <tr>
+                    <td>
+                        {{ vquestrun.name }}
+                    </td>
+                    <td>
+                        {{ vquestrun.Comment }}
+                    </td>
+
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='Summary'>{{ vquestrun.Summary }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='IMGT_gapped_nt_sequences'>{{ vquestrun.IMGT_gapped_nt_sequences }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='Nt_sequences'>{{ vquestrun.Nt_sequences }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='IMGT_gapped_AA_sequences'>{{ vquestrun.IMGT_gapped_AA_sequences }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='AA_sequences'>{{ vquestrun.AA_sequences }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='Junction'>{{ vquestrun.Junction }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='V_REGION_mutation_and_AA_change_table'>{{ vquestrun.V_REGION_mutation_and_AA_change_table }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='V_REGION_nt_mutation_statistics'>{{ vquestrun.V_REGION_nt_mutation_statistics }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='V_REGION_AA_change_statistics'>{{ vquestrun.V_REGION_AA_change_statistics }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='V_REGION_mutation_hotspots'>{{ vquestrun.V_REGION_mutation_hotspots }}</button>
+                    </td>
+                    <td>
+                        <button class="small" formtarget="_blank" type="submit" name='Parameters'>{{ vquestrun.Parameters }}</button>
+                    </td>
+                </tr>
+                    </form>
+                {% endfor %}
+                </tbody>
+            </table>
+    </div>
+    </div>
+
+</div>
+{% endblock %}

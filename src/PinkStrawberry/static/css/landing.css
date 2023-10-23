@@ -1,0 +1,30 @@
+body {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+  background-color: #f8f8f8;
+  margin: 0rem;
+  overflow: hidden;
+}
+
+h1 {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(3rem, 5vw, 10rem);
+  color: #27a498;
+  margin: 0;
+}
+
+a {
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(1.5rem, 2.5vw, 5rem);
+  color: #258c87;
+  margin: 10px 0;
+}
+
+a:hover {
+  color: #2eb0ab;
+}
+
+.alignbox {
+  text-align: center;
+}

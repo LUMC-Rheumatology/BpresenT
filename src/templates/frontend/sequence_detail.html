@@ -1,0 +1,156 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} {{ sequence_obj.Sequence_ID }} {% endblock %}
+
+{% block content %}
+    <div class="container-fluid d-flex flex-column flex-row">
+        <div class="row mx-2 mt-2 row-cols-2 g-2">
+            <div class="col-5">
+                {# button to visualization page #}
+                <a target="_blank" class="btn btn-info btn-lg col-12 mb-2" href="{% url 'patient/id' id=sequence_obj.Patient.Identifier %}" role="button">Go to Patient</a>
+
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Data</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                            {% for field, value in data.items %}
+                                {% if field == "Germline" %}
+                                <tr>
+                                    <th scope="row">{{ field }}</th>
+                                    <td>
+                                        {% for germline in value %}
+                                            {% if germline is not None %}
+                                            <a target="_blank" href="{% url 'germline/gene_and_allele' gene_and_allele=germline %}">{{ germline }}</a><br>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+
+                                {% else %}
+                                <tr>
+                                    <th scope="row">{{ field }}</th>
+                                    <td>{{ value }}</td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {# quick overview of peptides here #}
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Peptides</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                            <tr>
+                                <th scope="row">Peptide Seq</th>
+                                <th scope="row">MHC Allele</th>
+                                <th scope="row">#AA</th>
+                                <th scope="row">Percentile Rank</th>
+                                <th scope="row">V(D)J Position</th>
+                            </tr>
+                            {% for peptide in peptides %}
+                                <tr>
+                                    <th scope="row">{{ peptide.peptide }}</th>
+                                    <td>{{ peptide.allele }}</td>
+                                    <td>{{ peptide.peptide | length }}</td>
+                                    <td>{{ peptide.percentile_rank }}</td>
+                                    <td>{{ peptide.offset }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-7 text-break">
+            <a target="_blank" class="btn btn-info btn-lg col-12 mb-2" href="{% url 'visualizer/id' id=sequence_obj.id %}" role="button">Visualize sequence</a>
+                {# double tab card for V-Reg defined here #}
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">
+                        <div class="mb-1">V-Region Alignment</div>
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#Vaa">Amino Acids</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Vnt">Nucleotides</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class="card-body tab-content">
+                        <div class="tab-pane active" id="Vaa">
+                            <pre class="card-text">{{ germline_alignment_V_aa|safe }}</pre>
+                        </div>
+                        <div class="tab-pane" id="Vnt">
+                            <pre class="card-text">{{ germline_alignment_V_nt|safe }}</pre>
+                        </div>
+                    </form>
+                </div>
+                {# double tab card for D-Reg defined here #}
+                {% if germline_alignment_D_nt is not None %}
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">
+                        <div class="mb-1">D-Region Alignment</div>
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#Daa">Amino Acids</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Dnt">Nucleotides</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body tab-content">
+                        <div class="tab-pane active" id="Daa">
+                            <pre class="card-text">{{ germline_alignment_D_aa|safe }}</pre>
+                        </div>
+                        <div class="tab-pane" id="Dnt">
+                            <pre class="card-text">{{ germline_alignment_D_nt|safe }}</pre>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {# double tab card for J-Reg defined here #}
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">
+                        <div class="mb-1">J-Region Alignment</div>
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#Jaa">Amino Acids</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#Jnt">Nucleotides</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body tab-content">
+                        <div class="tab-pane active" id="Jaa">
+                            <pre class="card-text">{{ germline_alignment_J_aa|safe }}</pre>
+                        </div>
+                        <div class="tab-pane" id="Jnt">
+                            <pre class="card-text">{{ germline_alignment_J_nt|safe }}</pre>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Fasta</div>
+                    <div class="card-body font-monospace">
+                        <div class="text-info">{{ header }}<br></div>
+                        {{ nt_sequence }}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    {# enable popper for all tooltips #}
+    <script type="text/javascript" src="{% static 'js/popper_enable.js' %}"></script>
+{% endblock %}

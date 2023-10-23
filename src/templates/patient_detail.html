@@ -1,0 +1,109 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} {{ object.Identifier }} {% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid d-flex flex-column flex-row">
+    {% comment %}Patient Data table, isotype and pred/found peptide distribution{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-3 g-2">
+            <div class="col-4">
+                <div class="card border-primary mb-2 px-0">
+                    <div class="card-header">Data</div>
+                    <div class="card-body table-responsive">
+                        <table class="table table-striped">
+                            <tbody>
+                {% for field, value in data.items %}
+                    {% if field == "placeholder" %}
+                        <tr>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th scope="row">{{ field }}</th>
+                            <td>{{ value }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-4">
+            <div class="card mx-1">
+              <img class="card-img-top" src="data:image/png;base64, {{isotypepiechart|safe}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Isotype distribution</h5>
+              </div>
+            </div>
+
+            </div>
+            <div class="col-4">
+
+            <div class="card mx-1">
+              <img class="card-img-top" src="data:image/png;base64, {{peptidepiechart|safe}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Peptides</h5>
+                <p class="card-text">Predicted/Found/Predicted&Found ratio</p>
+              </div>
+            </div>
+
+            </div>
+        </div>
+    {% comment %}Gene/Allele Heavy{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-3 g-2">
+            {% for chart in h_germlinebarcharts %}
+            <div class="col-4">
+            <div class="card mx-1 mt-3">
+              <img class="card-img-top" src="data:image/png;base64, {{chart.0|safe}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Heavy Chain distribution, {{ chart.1 }}-Region</h5>
+                <p class="card-text">n = {{ chart.2 }}</p>
+              </div>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% comment %}Gene/Allele Kappa{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-3 g-2">
+            {% for chart in k_germlinebarcharts %}
+            <div class="col-4">
+            <div class="card mx-1 mt-3">
+              <img class="card-img-top" src="data:image/png;base64, {{chart.0|safe}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Kappa Light Chain distribution, {{ chart.1 }}-Region</h5>
+                <p class="card-text">n = {{ chart.2 }}</p>
+              </div>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% comment %}Gene/Allele Lambda{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-3 g-2">
+            {% for chart in l_germlinebarcharts %}
+            <div class="col-4">
+            <div class="card mx-1 mt-3">
+              <img class="card-img-top" src="data:image/png;base64, {{chart.0|safe}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">Lambda Light Chain distribution, {{ chart.1 }}-Region</h5>
+                <p class="card-text">n = {{ chart.2 }}</p>
+              </div>
+            </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% comment %}Misc. Plots{% endcomment %}
+        <div class="row mx-2 mt-2 row-cols-1 g-2">
+            <div class="col-4">
+            <div class="card mx-1 mt-3">
+              <img class="card-img-top" src="data:image/png;base64, {{mutglychart}}" alt="Card image cap">
+              <div class="card-body">
+                <h5 class="card-title">#Mutation / #Glycosilation scatterplot</h5>
+              </div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

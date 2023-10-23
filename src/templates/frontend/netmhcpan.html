@@ -1,0 +1,35 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} NetMHCpan analysis {% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="mt-5 mb-5">
+        <div class="row p-1">
+            <div class="col">
+            <div class="float-start">
+                <h3>NetMHCpan4.1 predictor</h3>
+            </div>
+            </div>
+            <div class="col">
+            <div class="float-end">
+                <h5><a href="{% url 'peptides/netmhcpan/allelelist' %}">MHC Allele list</a></h5>
+            </div>
+            </div>
+            <div class="row" style="height:200vh;">
+            <form action="{% url 'peptides/netmhcpan' %}" method="post">
+                {% csrf_token %}
+                {% bootstrap_form form layout="horizontal"%}
+                <br>
+                 <h6>Every sequence takes about half a minute, it might take a while!</h6>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="button" class="btn btn-info" onclick="clearInput(this.closest('form'));">Clear</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

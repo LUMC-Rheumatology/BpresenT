@@ -1,0 +1,25 @@
+/* REST API bootstrap fixes, might also need a JS fix? */
+.pull-right {float: right; margin-right: 1em;}
+.breadcrumb>li+li:before { padding: 0 5px; color: rgba(255,255,255,.6); content: ">"; }
+.nav-tabs>li+li:before { padding: 0 5px; color: #ccc; content: "|"; }
+.form-actions {margin: 0.75rem 0}
+
+/* stuff for making the navbar more clearly spaced */
+#circle {
+  width: 10px;
+  height: 10px;
+  background: #f3969a;
+  border-radius: 50%
+}
+
+/*
+.navbar-nav .nav-item:not(:last-child) {
+   border-right: 1px solid #f3969a;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav .nav-item:not(:last-child) {
+    border-right: none;
+  }
+}
+*/

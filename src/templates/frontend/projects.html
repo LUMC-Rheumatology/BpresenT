@@ -1,0 +1,85 @@
+{% extends 'frontend/base.html' %}
+{% load static %}
+{% load django_bootstrap5 %}
+
+{% block title %} Projects {% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    {% comment %} Modal content {% endcomment %}
+    <div class="modal {% if not modal_show %}fade{% endif %}"
+         id="projectModal" data-bs-backdrop="static" tabindex="-1"
+         aria-labelledby="projectModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="projectModalLabel">Create new Project</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="{% url 'projects' %}" method="post">
+              {% csrf_token %}
+              <div class="modal-body">
+              {% bootstrap_form form %}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% if modal_show %}
+        <script>
+        var myModal = new bootstrap.Modal(document.getElementById('projectModal'), {})
+        myModal.toggle()
+        </script>
+    {% endif %} 
+
+
+    {% comment %}Show current projects{% endcomment %}
+    <div class="mt-5">
+        <div class="row p-1 pt-2 align-items-end">
+            <div class="col">
+                <div class="float-start">
+                {{ projects|length }} projects loaded
+                </div>
+            </div>
+            <div class="col">
+                <div class="float-end">
+                {% comment %}Trigger Modal{% endcomment %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#projectModal">
+                    Create Project
+                </button>
+                </div>
+            </div>
+        </div>
+        <div class="row p-1">
+        <table class="table table-striped">
+          <thead>
+                <tr>
+                    <th class="table-primary" scope="col">Project Name</th>
+                    <th class="table-primary" scope="col">Description</th>
+                    <th class="table-primary" scope="col">Created at</th>
+                    <th class="table-primary" scope="col"># of Sequences</th>
+                </tr>
+          </thead>
+          <tbody>
+          {% for project in projects %}
+            <tr>
+              <th scope="row">
+                  <a href="{% url 'project/pk' pk=project.id %}" >{{ project.name }}</a>
+              </th>
+              <td>{{ project.description }}</td>
+              <td>{{ project.created_at }}</td>
+              <td>{{ project.get_sequences|length }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
